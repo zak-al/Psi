@@ -1,6 +1,4 @@
 import re
-import sys
-
 from PIL import Image, ImageDraw, ImageFont
 
 LINE_NUMBER_OFFSET = 20
@@ -14,7 +12,6 @@ tokeniser_regex = re.compile(r"(\s|\[|]|\(|\)|{|})")
 isstring_regex = re.compile(r"\"[^\"]+\"")
 
 FONT_SIZE = 25
-
 COMMENT_DELIMITER = "//"
 
 class Backgrounds:
@@ -174,3 +171,4 @@ class Snippet:
                 inline_horizontal_offset += font.getsize(token.content)[0]
 
         image.save(f"{self.name}.png")
+        print(f"Image successfully saved to {self.name}.png.")
