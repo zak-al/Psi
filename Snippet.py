@@ -14,29 +14,23 @@ isstring_regex = re.compile(r"\"[^\"]+\"")
 FONT_SIZE = 25
 COMMENT_DELIMITER = "//"
 
+
 class Backgrounds:
     black = (10, 10, 10)
     white = (245, 245, 245)
 
 
 KEYWORDS = ("let", "rec", "if", "then", "else", "function", "Array", "Set", "for", "and", "or")
+OPERATORS = ("=", "<", ">", "<=", ">=", "+", "-", "*", "/", ",", "..", "<-")
+BUILT_IN_IDENTIFIERS = ("min", "max")
 
 
 def isBracket(text):
     return text in ("(", ")", "[", "]", "{", "}")
 
 
-def isOperator(text):
-    if text in ("=", "<", ">", "<=", ">=", "+", "-", "*", "/", ",", "..", "<-"):
-        return True
-
-
 def isNumericSequence(text):
     return re.search(isdigit_regex, text) is not None
-
-
-def isBuiltInFunction(text):
-    return text in ("max", "min")
 
 
 def isString(text):
@@ -69,12 +63,14 @@ parameters = {
     "INLINE_COMMENT_START": COMMENT_DELIMITER,
     "THEME": "light",
     "KEYWORDS": KEYWORDS,
+    "OPERATORS": OPERATORS,
     "BACKGROUND": Backgrounds.white,
     "CODE_FONT": "Inconsolata-SemiBold.ttf",
     "LINE_NUMBERS_FONT": "Inconsolata-Light.ttf",
+    "BUILT_IN_IDENTIFIERS": BUILT_IN_IDENTIFIERS,
 }
 
-def getCoulours():
+def getColours():
     if type(parameters["THEME"]) == str:
         if parameters["THEME"] not in COLOURS:
             print(
@@ -88,9 +84,20 @@ def getCoulours():
         return parameters["THEME"]
 
 
+def getOperators():
+    return parameters["OPERATORS"]
+
+
+def getBuiltinIdentifiers():
+    return parameters["BUILT_IN_IDENTIFIERS"]
+
+
 class Token:
     def setColour(self):
-        Colour = getCoulours()
+        Colour = getColours()
+        operators = getOperators()
+        built_in_identifiers = getBuiltinIdentifiers()
+
         keywords = parameters["KEYWORDS"]
         content = self.content
 
@@ -98,7 +105,7 @@ class Token:
             self.colour = Colour["comment"]
         elif content in keywords:
             self.colour = Colour["keyword"]
-        elif isOperator(content):
+        elif content in operators:
             self.colour = Colour["operator"]
         elif isNumericSequence(content):
             self.colour = Colour["num"]
@@ -106,12 +113,12 @@ class Token:
             self.colour = Colour["string"]
         elif isBracket(content):
             self.colour = Colour["brackets"]
-        elif isBuiltInFunction(content):
+        elif content in built_in_identifiers:
             self.colour = Colour["built-in"]
         else:
             self.colour = Colour["default"]
 
-    def __init__(self, content: str, comment=False, ligatures=True):
+    def __init__(self, content: str, comment: bool = False, ligatures: bool = True):
         self.comment = comment
 
         if ligatures:
@@ -129,7 +136,7 @@ class Snippet:
         self.background = parameters["BACKGROUND"]
         self.ligatures = ligatures
 
-    def add(self, content: str, indentation_level=0):
+    def add(self, content: str, indentation_level: int = 0):
         tokens = []
         comment = False
 
@@ -140,8 +147,8 @@ class Snippet:
 
         self.lines.append((indentation_level, tokens))
 
-    def generate(self, width=500):
-        Colour = getCoulours()
+    def generate(self, width: int = 500):
+        Colour = getColours()
 
         font = ImageFont.truetype(parameters["CODE_FONT"], FONT_SIZE)
         line_number_font = ImageFont.truetype(parameters["LINE_NUMBERS_FONT"], FONT_SIZE)
