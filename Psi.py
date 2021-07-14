@@ -1,4 +1,5 @@
 import re
+
 from PIL import Image, ImageDraw, ImageFont
 
 LINE_NUMBER_OFFSET = 20
@@ -8,7 +9,7 @@ indentation = lambda x: 30 + LINE_NUMBER_OFFSET + INDENTATION * x
 line = lambda x: 30 + (FONT_SIZE * 2) * x
 
 isdigit_regex = re.compile(r"(^-?[0-9]*\.?[0-9]*$)|(^[+|-]infinity$)")
-tokeniser_regex = re.compile(r"(\s|\[|]|\(|\)|{|}|,|:|\||<|>)")
+tokeniser_regex = re.compile(r"(\s|\[|]|\(|\)|{|}|,|:|\||<|>|.)")
 isstring_regex = re.compile(r"\"[^\"]+\"")
 
 FONT_SIZE = 25
@@ -21,7 +22,7 @@ class Backgrounds:
 
 
 KEYWORDS = ("let", "rec", "if", "then", "else", "function", "Array", "Array2D", "Set", "for", "and", "or", "type")
-OPERATORS = ("=", "!=", "<", ">", "<=", ">=", "+", "-", "*", "/", ",", "..", "<-", "<<", ">>", "|", "&", "|", ":")
+OPERATORS = ("=", "!=", "<", ">", "<=", ">=", "+", "-", "*", "/", ",", "..", "<-", "<<", ">>", "|", "&", "|", ":", ".")
 BUILT_IN_IDENTIFIERS = ("min", "max")
 
 
