@@ -130,7 +130,7 @@ class Token:
         self.setColour()
 
 
-class Snippet:
+class PSnippet:
     def __init__(self, name: str, ligatures: bool = True):
         self.name = name
         self.lines = []

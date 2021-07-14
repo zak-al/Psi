@@ -47,7 +47,7 @@ For the moment, these colours are `white` (default) and `black`, which is a "lig
 ### Ligatures
 
 _Psi_ supports some simple ligatures. They include weak equalities (`<=` and `>=`), not equal (`!=`), and infinity (`+infinity`, `-infinity` and `infinity`).
-They are enabled by default, but can be disabled by passing `ligatures=False` to the constructor of `Snippet` (see below for a tutorial on how to create Snippets).
+They are enabled by default, but can be disabled by passing `ligatures=False` to the constructor of `PSnippet` (see below for a tutorial on how to create Snippets).
 
 ---
 
@@ -58,11 +58,13 @@ Here is how you can create an image:
 1. Create a snippet. The constructor takes a single parameter: the name of the snippet. It will be used to name the image file, so you should avoid spaces and other fancy characters.
 
 ```
-snippet = Psi.Snippet("fibonacci")
+from Psi import PSnippet
+
+snippet = PSnippet("fibonacci")
 ```
 It takes an optional parameter, `ligatures`, of type `bool`.
 
-2. Add lines with `Snippet.add`. It takes two parameters: the content (of type `str`) and the level of indentation (of type `int`, optional with default value 0):
+2. Add lines with `PSnippet.add`. It takes two parameters: the content (of type `str`) and the level of indentation (of type `int`, optional with default value 0):
 
 ```
 snippet.add("function fibonacci x")
@@ -71,7 +73,7 @@ snippet.add("else", 1)
 snippet.add("fibonacci (x - 1) + fibonacci (x - 2)", 2)
 ```
 
-3. Generate the image using `Snippet.generate`.
+3. Generate the image using `PSnippet.generate`.
    Note that the height of the image is adaptive, but the width is not.
    You can adjust it by tweaking the parameter of `generate`
    (default value is 1000 pixels):
@@ -88,4 +90,4 @@ snippet.generate(1000)
 - A built-in dark theme, and some other themes
 - Adaptive image width
 - Build entire snippets from string instead of line-by-line.
-- Snippet highlighting: possibility to highlight some code regions, e.g. by making the background lighter or darker.
+- PSnippet highlighting: possibility to highlight some code regions, e.g. by making the background lighter or darker.
