@@ -72,6 +72,7 @@ parameters = {
     "BUILT_IN_IDENTIFIERS": BUILT_IN_IDENTIFIERS,
 }
 
+
 def getColours():
     if type(parameters["THEME"]) == str:
         if parameters["THEME"] not in COLOURS:
