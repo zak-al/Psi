@@ -1,5 +1,9 @@
 # PSI
+
 _Psi_ helps you create simple pseudocode images.
+
+![](sample_image.png)
+
 It supports basic code highlighting, based on the following categories of tokens:
 * keywords,
 * operators,
@@ -42,7 +46,7 @@ For the moment, these colours are `white` (default) and `black`, which is a "lig
 
 ### Ligatures
 
-_Psi_ supports some simple ligatures. They include weak equalities (`<=` and `>=`) and infinity (`+infinity`, `-infinity` and `infinity`).
+_Psi_ supports some simple ligatures. They include weak equalities (`<=` and `>=`), not equal (`!=`), and infinity (`+infinity`, `-infinity` and `infinity`).
 They are enabled by default, but can be disabled by passing `ligatures=False` to the constructor of `Snippet` (see below for a tutorial on how to create Snippets).
 
 ---
@@ -70,7 +74,7 @@ snippet.add("fibonacci (x - 1) + fibonacci (x - 2)", 2)
 3. Generate the image using `Snippet.generate`.
    Note that the height of the image is adaptive, but the width is not.
    You can adjust it by tweaking the parameter of `generate`
-   (default value is 500 pixels):
+   (default value is 1000 pixels):
 
 ```
 snippet.generate(1000)
@@ -83,3 +87,5 @@ snippet.generate(1000)
 - Support single-quoted strings
 - A built-in dark theme, and some other themes
 - Adaptive image width
+- Build entire snippets from string instead of line-by-line.
+- Snippet highlighting: possibility to highlight some code regions, e.g. by making the background lighter or darker.

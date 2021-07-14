@@ -8,7 +8,7 @@ indentation = lambda x: 30 + LINE_NUMBER_OFFSET + INDENTATION * x
 line = lambda x: 30 + (FONT_SIZE * 2) * x
 
 isdigit_regex = re.compile(r"(^-?[0-9]*\.?[0-9]*$)|(^[+|-]infinity$)")
-tokeniser_regex = re.compile(r"(\s|\[|]|\(|\)|{|})")
+tokeniser_regex = re.compile(r"(\s|\[|]|\(|\)|{|}|,|:|\|)")
 isstring_regex = re.compile(r"\"[^\"]+\"")
 
 FONT_SIZE = 25
@@ -20,8 +20,8 @@ class Backgrounds:
     white = (245, 245, 245)
 
 
-KEYWORDS = ("let", "rec", "if", "then", "else", "function", "Array", "Set", "for", "and", "or")
-OPERATORS = ("=", "<", ">", "<=", ">=", "+", "-", "*", "/", ",", "..", "<-")
+KEYWORDS = ("let", "rec", "if", "then", "else", "function", "Array", "Array2D", "Set", "for", "and", "or", "type")
+OPERATORS = ("=", "!=", "<", ">", "<=", ">=", "+", "-", "*", "/", ",", "..", "<-", "<<", ">>", "|", "&", "|", ":")
 BUILT_IN_IDENTIFIERS = ("min", "max")
 
 
@@ -55,7 +55,8 @@ LIGATURES = {
     ">=": u"\u2265",
     "+infinity": u"+\u221E",
     "-infinity": u"-\u221E",
-    "infinity": u"\u221E"
+    "infinity": u"\u221E",
+    "!=": u"\u2260",
 }
 
 
@@ -147,7 +148,7 @@ class Snippet:
 
         self.lines.append((indentation_level, tokens))
 
-    def generate(self, width: int = 500):
+    def generate(self, width: int = 1000):
         Colour = getColours()
 
         font = ImageFont.truetype(parameters["CODE_FONT"], FONT_SIZE)
