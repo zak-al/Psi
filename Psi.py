@@ -9,7 +9,7 @@ indentation = lambda x: 30 + LINE_NUMBER_OFFSET + INDENTATION * x
 line = lambda x: 30 + (FONT_SIZE * 2) * x
 
 isdigit_regex = re.compile(r"(^-?[0-9]*\.?[0-9]*$)|(^[+|-]infinity$)")
-tokeniser_regex = re.compile(r"(\s|\[|]|\(|\)|{|}|,|:|\||<|>|\.)")
+tokeniser_regex = re.compile(r"(\s|\[|]|\(|\)|{|}|,|:|\||<=|>=|<|>|\.)")
 isstring_regex = re.compile(r"\"[^\"]+\"")
 
 FONT_SIZE = 25
@@ -123,13 +123,12 @@ class Token:
 
     def __init__(self, content: str, comment: bool = False, ligatures: bool = True):
         self.comment = comment
+        self.content = content
+        self.setColour()
 
         if ligatures:
             for sequence, replacement in LIGATURES.items():
-                content = content.replace(sequence, replacement)
-
-        self.content = content
-        self.setColour()
+                self.content = self.content.replace(sequence, replacement)
 
 
 class PSnippet:
