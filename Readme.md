@@ -14,7 +14,8 @@ It supports basic code highlighting, based on the following categories of tokens
 * strings,
 * _default_ (typically identifiers)
 
-Keywords, operators and built-in identifiers can be customised by setting values in the `parameters` dictionary (`KEYWORDS`, `OPERATORS` and `BUILT_IN_IDENTIFIERS`, respectively).
+Keywords, operators and built-in identifiers can be customised by setting values in the `parameters` dictionary (`KEYWORDS`, `OPERATORS` and `BUILT_IN_IDENTIFIERS`, respectively). These are sets, so you can add keywords/operators/identifiers using the `add` method.
+
 
 Strings are necessarily delimited by double quotes `"` and treats escaped quotes as ordinary quotes.
 
@@ -44,12 +45,20 @@ Finally, the default background is light-grey: RGB(245, 245, 245). You can chang
 You can assign your own colour (represented by a tuple) or one of the values contained in class `Background`.
 For the moment, these colours are `white` (default) and `black`, which is a "light black" with value (10, 10, 10).
 
+**Note that parameter changes will only be taken into account if performed before instantiating PSnippet.**
+
 ### Ligatures
 
 _Psi_ supports some simple ligatures. They include weak equalities (`<=` and `>=`), not equal (`!=`), and infinity (`+infinity`, `-infinity` and `infinity`).
 They are enabled by default, but can be disabled by passing `ligatures=False` to the constructor of `PSnippet` (see below for a tutorial on how to create Snippets).
 
 ---
+
+## Install
+
+Run:
+
+`pip3 install --upgrade git+https://github.com/zak-al/Psi.git#egg=Psi`
 
 ## Create your image
 
@@ -90,4 +99,4 @@ snippet.generate(1000)
 - A built-in dark theme, and some other themes
 - Adaptive image width
 - Build entire snippets from string instead of line-by-line.
-- PSnippet highlighting: possibility to highlight some code regions, e.g. by making the background lighter or darker.
+- Snippet highlighting: possibility to highlight some code regions, e.g. by making the background lighter or darker.

@@ -9,8 +9,11 @@ indentation = lambda x: 30 + LINE_NUMBER_OFFSET + INDENTATION * x
 line = lambda x: 30 + (FONT_SIZE * 2) * x
 
 isdigit_regex = re.compile(r"(^-?[0-9]*\.?[0-9]*$)|(^[+|-]infinity$)")
+
 tokeniser_regex = re.compile(r"(\s|\[|]|\(|\)|{|}|,|:|\||<=|>=|<|>|\.)")
-isstring_regex = re.compile(r"\"[^\"]+\"")
+
+#isstring_regex = re.compile(r"""/"(?:[^"\\]|\\.)*"/""")
+isstring_regex = re.compile(r"\"[^\"]*\"")
 
 FONT_SIZE = 25
 COMMENT_DELIMITER = "//"
@@ -21,9 +24,9 @@ class Backgrounds:
     white = (245, 245, 245)
 
 
-KEYWORDS = ("let", "rec", "if", "then", "else", "function", "Array", "Array2D", "Set", "for", "and", "or", "type")
-OPERATORS = ("=", "!=", "<", ">", "<=", ">=", "+", "-", "*", "/", ",", "..", "<-", "<<", ">>", "|", "&", "|", ":", ".")
-BUILT_IN_IDENTIFIERS = ("min", "max")
+KEYWORDS = {"let", "rec", "if", "then", "else", "function", "Array", "Array2D", "Set", "for", "and", "or", "type", "match", "with"}
+OPERATORS = {"=", "!=", "<", ">", "<=", ">=", "+", "-", "*", "/", ",", "..", "<-", "<<", ">>", "|", "&", "|", ":", "."}
+BUILT_IN_IDENTIFIERS = {"min", "max", "Length"}
 
 
 def isBracket(text):
@@ -47,7 +50,8 @@ COLOURS = {
               "comment": (144, 164, 174),
               "default": (170, 0, 255),
               "string": (76, 175, 80),
-              "line_number": (120, 144, 156)}
+              "line_number": (120, 144, 156),
+              "__highlight": (220, 220, 220)}
 }
 
 
@@ -138,7 +142,11 @@ class PSnippet:
         self.background = parameters["BACKGROUND"]
         self.ligatures = ligatures
 
-    def add(self, content: str, indentation_level: int = 0):
+        self.colour = Colour = getColours()
+        self.font = ImageFont.truetype(parameters["CODE_FONT"], FONT_SIZE)
+        self.line_number_font = ImageFont.truetype(parameters["LINE_NUMBERS_FONT"], FONT_SIZE)
+
+    def add(self, content: str, indentation_level: int = 0, highlighted: bool = False):
         tokens = []
         comment = False
 
@@ -147,37 +155,52 @@ class PSnippet:
 
             tokens.append(Token(tok, comment=comment, ligatures=self.ligatures))
 
-        self.lines.append((indentation_level, tokens))
+        self.lines.append((indentation_level, tokens, highlighted))
 
-    def generate(self, width: int = 1000):
-        Colour = getColours()
+    def print_line(self, d, indentation_level, height_offset, line_number, tokens):
+        d.text(
+            (LINE_NUMBER_OFFSET, height_offset),
+            str(line_number + 1),
+            fill=self.colour["line_number"],
+            font=self.line_number_font
+        )
 
-        font = ImageFont.truetype(parameters["CODE_FONT"], FONT_SIZE)
-        line_number_font = ImageFont.truetype(parameters["LINE_NUMBERS_FONT"], FONT_SIZE)
+        inline_horizontal_offset = self.font.getsize(str(len(self.lines)))[0]
 
-        height = line(len(self.lines)) + line(0)
-        image = Image.new("RGB", (width, height), color=self.background)
-        d = ImageDraw.Draw(image)
-
-        for line_number, (indentation_level, tokens) in enumerate(self.lines):
+        for token_number, token in enumerate(tokens):
             d.text(
-                (LINE_NUMBER_OFFSET, line(line_number)),
-                str(line_number + 1),
-                fill=Colour["line_number"],
-                font=line_number_font
+                (indentation(indentation_level) + inline_horizontal_offset, height_offset),
+                token.content,
+                fill=token.colour,
+                font=self.font
             )
 
-            inline_horizontal_offset = font.getsize(str(len(self.lines)))[0]
+            inline_horizontal_offset += self.font.getsize(token.content)[0]
 
-            for token_number, token in enumerate(tokens):
-                d.text(
-                    (indentation(indentation_level) + inline_horizontal_offset, line(line_number)),
-                    token.content,
-                    fill=token.colour,
-                    font=font
-                )
+    def generate(self, width: int = 1000):
+        height = line(len(self.lines)) + line(0)
+        image = Image.new("RGB", (width, height), color=self.background)
 
-                inline_horizontal_offset += font.getsize(token.content)[0]
+        highlighted_images = []
+
+        d = ImageDraw.Draw(image)
+
+        for line_number, (indentation_level, tokens, highlighted) in enumerate(self.lines):
+            if highlighted:
+                height_before = line(line_number)
+                height_offset = self.font.getsize(str(len(self.lines)))[1] // 2
+                h_image = Image.new("RGB", (width, line(line_number + 1) - height_before), color=self.colour["__highlight"])
+                h_d = ImageDraw.Draw(h_image)
+
+                self.print_line(h_d, indentation_level, height_offset, line_number, tokens)
+
+                highlighted_images.append((height_before - height_offset, h_image))
+                h_image.save("aaa.png")
+            else:
+                self.print_line(d, indentation_level, line(line_number), line_number, tokens)
+
+        for vertical_offset, img in highlighted_images:
+            image.paste(img, (0, vertical_offset))
 
         image.save(f"{self.name}.png")
         print(f"Image successfully saved to {self.name}.png.")
