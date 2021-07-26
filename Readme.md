@@ -22,6 +22,14 @@ Strings are necessarily delimited by double quotes `"` and treats escaped quotes
 For the moment, _Psi_ only supports inline comments. This means that a comment necessarily ends at the end of the line where it started.
 By default, comments start with a double slash: `//`. This can be changed by modifying `parameters[INLINE_COMMENT_START]`.
 
+### SQL
+
+If you want to display SQL requests, you can use the set  `KEYWORDS_SQL`:
+```
+Psi.parameters["KEYWORDS"] = Psi.KEYWORDS_SQL
+```
+Similarly, you can use `BUILT_IN_SQL` which contains types, like `varchar` and `int`.
+
 ### Themes, background
 
 The theme determines syntax highlighting. For the moment, there only exists one theme: `light`.

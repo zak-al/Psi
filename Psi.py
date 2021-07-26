@@ -5,17 +5,18 @@ from PIL import Image, ImageDraw, ImageFont
 LINE_NUMBER_OFFSET = 20
 INDENTATION = 60
 
+FONT_SIZE = 25
+
 indentation = lambda x: 30 + LINE_NUMBER_OFFSET + INDENTATION * x
-line = lambda x: 30 + (FONT_SIZE * 2) * x
+line = lambda x: 30 + (FONT_SIZE * 3) * x
 
 isdigit_regex = re.compile(r"(^-?[0-9]*\.?[0-9]*$)|(^[+|-]infinity$)")
 
-tokeniser_regex = re.compile(r"(\s|\[|]|\(|\)|{|}|,|:|\||<=|>=|<|>|\.)")
+tokeniser_regex = re.compile(r"(\s|\[|]|\(|\)|{|}|,|:|\||<=|>=|->|<-|<|>|\.)")
 
 #isstring_regex = re.compile(r"""/"(?:[^"\\]|\\.)*"/""")
 isstring_regex = re.compile(r"\"[^\"]*\"")
 
-FONT_SIZE = 25
 COMMENT_DELIMITER = "//"
 
 
@@ -26,7 +27,10 @@ class Backgrounds:
 
 KEYWORDS = {"let", "rec", "if", "then", "else", "function", "Array", "Array2D", "Set", "for", "and", "or", "type", "match", "with"}
 OPERATORS = {"=", "!=", "<", ">", "<=", ">=", "+", "-", "*", "/", ",", "..", "<-", "<<", ">>", "|", "&", "|", ":", "."}
-BUILT_IN_IDENTIFIERS = {"min", "max", "Length"}
+BUILT_IN_IDENTIFIERS = {"min", "max", "Length", "int"}
+
+KEYWORDS_SQL = {"CREATE", "TABLE", "IF", "NOT", "EXISTS", "NULL", "PRIMARY", "KEY", "INSERT", "INTO", "VALUES", "SELECT", "WHERE", "FROM"}
+BUILT_IN_SQL = {"varchar", "int", "float"}
 
 
 def isBracket(text):
@@ -61,7 +65,9 @@ LIGATURES = {
     "+infinity": u"+\u221E",
     "-infinity": u"-\u221E",
     "infinity": u"\u221E",
+    "pi": u"\u03C0",
     "!=": u"\u2260",
+    #"->": u"\u1F812"
 }
 
 
@@ -71,8 +77,8 @@ parameters = {
     "KEYWORDS": KEYWORDS,
     "OPERATORS": OPERATORS,
     "BACKGROUND": Backgrounds.white,
-    "CODE_FONT": "Inconsolata-SemiBold.ttf",
-    "LINE_NUMBERS_FONT": "Inconsolata-Light.ttf",
+    "CODE_FONT": "RobotoMono-SemiBold.ttf",
+    "LINE_NUMBERS_FONT": "RobotoMono-Light.ttf",
     "BUILT_IN_IDENTIFIERS": BUILT_IN_IDENTIFIERS,
 }
 
@@ -142,7 +148,7 @@ class PSnippet:
         self.background = parameters["BACKGROUND"]
         self.ligatures = ligatures
 
-        self.colour = Colour = getColours()
+        self.colour = getColours()
         self.font = ImageFont.truetype(parameters["CODE_FONT"], FONT_SIZE)
         self.line_number_font = ImageFont.truetype(parameters["LINE_NUMBERS_FONT"], FONT_SIZE)
 
@@ -188,7 +194,7 @@ class PSnippet:
         for line_number, (indentation_level, tokens, highlighted) in enumerate(self.lines):
             if highlighted:
                 height_before = line(line_number)
-                height_offset = self.font.getsize(str(len(self.lines)))[1] // 2
+                height_offset = ( (line(2) - line(1) ) - self.font.getsize(str(len(self.lines)))[1] ) // 2
                 h_image = Image.new("RGB", (width, line(line_number + 1) - height_before), color=self.colour["__highlight"])
                 h_d = ImageDraw.Draw(h_image)
 
